@@ -1,62 +1,32 @@
--- Animasyon Kontrol Menüsü
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AnimasyonMenu"
-ScreenGui.Parent = game.CoreGui
-
--- Menü Çerçevesi
+-- SADECE ANIMASYON MENÜSÜ
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 180, 0, 100)
+MainFrame.Size = UDim2.new(0, 200, 0, 180)
 MainFrame.Position = UDim2.new(0.4, 0, 0.4, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 MainFrame.Active = true
 MainFrame.Draggable = true
-MainFrame.Visible = true
 
--- Aç/Kapa Butonu
-local ToggleBtn = Instance.new("TextButton", ScreenGui)
-ToggleBtn.Size = UDim2.new(0, 80, 0, 30)
-ToggleBtn.Position = UDim2.new(0.02, 0, 0.02, 0)
-ToggleBtn.Text = "ANIM MENU"
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
-ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleBtn.Visible = false
-
--- Animasyon Uygulama Butonu
-local ApplyBtn = Instance.new("TextButton", MainFrame)
-ApplyBtn.Size = UDim2.new(0.8, 0, 0, 40)
-ApplyBtn.Position = UDim2.new(0.1, 0, 0.3, 0)
-ApplyBtn.Text = "ADIDAS ANIM: ON"
-ApplyBtn.BackgroundColor3 = Color3.fromRGB(60, 160, 60)
-ApplyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-
--- Kapatma Butonu
-local CloseBtn = Instance.new("TextButton", MainFrame)
-CloseBtn.Size = UDim2.new(0, 20, 0, 20)
-CloseBtn.Position = UDim2.new(0.9, 0, 0, 0)
-CloseBtn.Text = "X"
-CloseBtn.BackgroundColor3 = Color3.fromRGB(160, 60, 60)
-
--- Fonksiyonlar
-CloseBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false
-    ToggleBtn.Visible = true
-end)
-
-ToggleBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = true
-    ToggleBtn.Visible = false
-end)
-
-ApplyBtn.MouseButton1Click:Connect(function()
-    local player = game.Players.LocalPlayer
-    local char = player.Character
-    if char then
-        local animate = char:FindFirstChild("Animate")
-        if animate then
-            animate.idle.AnimationId = "rbxassetid://616158929"
-            animate.run.AnimationId = "rbxassetid://616163682"
-            animate.jump.AnimationId = "rbxassetid://616161997"
-            animate.fall.AnimationId = "rbxassetid://616160636"
-        end
+local function setAnim(idle, run, jump, fall)
+    local char = game.Players.LocalPlayer.Character
+    if char and char:FindFirstChild("Animate") then
+        local a = char.Animate
+        a.idle.AnimationId = "rbxassetid://" .. idle
+        a.run.AnimationId = "rbxassetid://" .. run
+        a.jump.AnimationId = "rbxassetid://" .. jump
+        a.fall.AnimationId = "rbxassetid://" .. fall
+        char:BreakJoints() -- Animasyonun işlemesi için karakteri yenile
     end
-end)
+end
+
+local function createBtn(name, pos, i, r, j, f)
+    local btn = Instance.new("TextButton", MainFrame)
+    btn.Size = UDim2.new(0.8, 0, 0, 30)
+    btn.Position = pos
+    btn.Text = name
+    btn.MouseButton1Click:Connect(function() setAnim(i, r, j, f) end)
+end
+
+createBtn("ADIDAS STYLE", UDim2.new(0.1, 0, 0.1, 0), "616158929", "616163682", "616161997", "616160636")
+createBtn("CARTOON STYLE", UDim2.new(0.1, 0, 0.4, 0), "469113076", "469113639", "469112932", "469113222")
+createBtn("OLD SCHOOL", UDim2.new(0.1, 0, 0.7, 0), "507766388", "507767714", "507767962", "507767374")
