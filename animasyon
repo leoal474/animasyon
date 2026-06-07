@@ -1,32 +1,39 @@
--- SADECE ANIMASYON MENÜSÜ
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 200, 0, 180)
-MainFrame.Position = UDim2.new(0.4, 0, 0.4, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.Active = true
-MainFrame.Draggable = true
+-- Adidas/Stylish Animasyon Sistemi (Profesyonel Yöntem)
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local animate = character:WaitForChild("Animate")
 
-local function setAnim(idle, run, jump, fall)
-    local char = game.Players.LocalPlayer.Character
-    if char and char:FindFirstChild("Animate") then
-        local a = char.Animate
-        a.idle.AnimationId = "rbxassetid://" .. idle
-        a.run.AnimationId = "rbxassetid://" .. run
-        a.jump.AnimationId = "rbxassetid://" .. jump
-        a.fall.AnimationId = "rbxassetid://" .. fall
-        char:BreakJoints() -- Animasyonun işlemesi için karakteri yenile
+-- O adamın sistemindeki gibi animasyonları kökten değiştiriyoruz
+local function applyAdidas()
+    local anims = {
+        idle = "rbxassetid://616158929",
+        run = "rbxassetid://616163682",
+        jump = "rbxassetid://616161997",
+        fall = "rbxassetid://616160636"
+    }
+    
+    for name, id in pairs(anims) do
+        if animate:FindFirstChild(name) then
+            animate[name].AnimationId = id
+        end
     end
+    
+    -- Karakteri hemen resetlemeden animasyonları aktif etmek için Humanoid'i tetikle
+    character.Humanoid.Jump = true 
+    task.wait(0.1)
+    character.Humanoid.Jump = false
 end
 
-local function createBtn(name, pos, i, r, j, f)
-    local btn = Instance.new("TextButton", MainFrame)
-    btn.Size = UDim2.new(0.8, 0, 0, 30)
-    btn.Position = pos
-    btn.Text = name
-    btn.MouseButton1Click:Connect(function() setAnim(i, r, j, f) end)
-end
+-- Menü
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+local Btn = Instance.new("TextButton", ScreenGui)
+Btn.Size = UDim2.new(0, 150, 0, 50)
+Btn.Position = UDim2.new(0.5, -75, 0.5, 0)
+Btn.Text = "ADIDAS ANIM: ACTIVE"
+Btn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+Btn.Active = true
+Btn.Draggable = true
 
-createBtn("ADIDAS STYLE", UDim2.new(0.1, 0, 0.1, 0), "616158929", "616163682", "616161997", "616160636")
-createBtn("CARTOON STYLE", UDim2.new(0.1, 0, 0.4, 0), "469113076", "469113639", "469112932", "469113222")
-createBtn("OLD SCHOOL", UDim2.new(0.1, 0, 0.7, 0), "507766388", "507767714", "507767962", "507767374")
+Btn.MouseButton1Click:Connect(applyAdidas)
+
